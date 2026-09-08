@@ -36,9 +36,9 @@ page = open(sys.argv[1], encoding='utf-8').read()
 blob = json.loads(re.search(r'const BLOB = (\{.*?\});', page).group(1))
 b = lambda s: base64.b64decode(s)
 key = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=b(blob['salt']), iterations=blob['iter']).derive(sys.argv[2].encode())
-html = AESGCM(key).decrypt(b(blob['nonce']), b(blob['ct']), None).decode('utf-8')
-src = open(sys.argv[3], encoding='utf-8').read()
-print('roundtrip OK' if html == src else 'ROUNDTRIP MISMATCH'); sys.exit(0 if html == src else 1)
+html = AESGCM(key).decrypt(b(blob['nonce']), b(blob['ct']), None)
+src = open(sys.argv[3], 'rb').read()   # bytes: en modo texto Python normaliza los \r\n y la comparacion falla
+print('roundtrip OK (%d bytes)' % len(html) if html == src else 'ROUNDTRIP MISMATCH'); sys.exit(0 if html == src else 1)
 "@
 $chkFile = Join-Path $env:TEMP 'payroll_chk.py'
 [IO.File]::WriteAllText($chkFile, $chk, (New-Object Text.UTF8Encoding($false)))
