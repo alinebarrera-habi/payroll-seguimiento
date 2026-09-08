@@ -1,0 +1,12 @@
+# Contrasena de publicacion (por maquina) - NUNCA se sube
+config.local.ps1
+config.local.sh
+
+# El tablero SIN cifrar no va al repo (el repo es publico). Vive en Desktop\Tableros.
+Tablero_Payroll_Habi*.html
+*_sin_cifrar.html
+
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
