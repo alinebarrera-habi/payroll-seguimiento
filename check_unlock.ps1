@@ -11,7 +11,7 @@ $stamp = [Guid]::NewGuid().ToString('N').Substring(0,6)
 $probe = Join-Path $env:TEMP "unlock_$stamp.html"; $udd = Join-Path $env:TEMP "udd_unlock_$stamp"; $dom = Join-Path $env:TEMP "dom_unlock_$stamp.html"
 $page = (Invoke-WebRequest -Uri $Url -UseBasicParsing -TimeoutSec 60).Content
 $inject = "<script>try{sessionStorage.setItem('payroll-pw'," + (ConvertTo-Json $PAYROLL_PASSWORD) + ");}catch(e){}</script>"
-[IO.File]::WriteAllText($probe, $page.Replace('<script>', $inject + '<script>', [StringComparison]::Ordinal), (New-Object Text.UTF8Encoding($false)))
+[IO.File]::WriteAllText($probe, $page.Replace('<script>', $inject + '<script>'), (New-Object Text.UTF8Encoding($false)))
 # .Replace reemplaza TODAS las ocurrencias; solo hay un <script> en el wrapper, asi que queda antes del BLOB.
 $cargs = @('--headless=new','--disable-gpu','--no-sandbox','--virtual-time-budget=15000',"--user-data-dir=$udd",'--dump-dom',('file:///' + ($probe -replace '\\','/')))
 & $Chrome @cargs 2>$null | Out-File -FilePath $dom -Encoding utf8
